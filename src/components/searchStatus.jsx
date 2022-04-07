@@ -1,26 +1,30 @@
-import React from 'react';
-import Users from './users';
+import React from "react";
+import PropTypes from "prop-types";
 
-export const SearchStatus = (props) => {
-    
+const SearchStatus = ({ length }) => {
     const renderPhrase = (number) => {
-        if(props.usersCount === 2 || props.usersCount === 3 || props.usersCount=== 4) {
-            return <span>человека тусанут</span>
-        } else {
-            return <span>человек тусанет</span>
+        const lastOne = Number(number.toString().slice(-1));
+        if (number > 4 && number < 15) {
+            return "человек тусанет";
         }
-    }
-    const formatCount = () => {
-        return props.usersCount === 0 ? <h2>Никто с тобой не тусанет</h2> : 
-        <h2>{props.usersCount} {renderPhrase()} с тобой сегодня</h2>;
-    };
-    const getBadgeClasses = () => {
-        let classes = "badge ";
-        classes += props.usersCount=== 0 ? "bg-danger" : "bg-primary";
-        return classes
+        if (lastOne === 1) return "человек тусанет";
+        if ([2, 3, 4].indexOf(lastOne) >= 0) return "человека тусанут";
+        return "человек тусанет";
     };
     return (
-        <span className={getBadgeClasses()}>{ formatCount() }</span>
-    )
+        <h2>
+            <span
+                className={"badge " + (length > 0 ? "bg-primary" : "bg-danger")}
+            >
+                {length > 0
+                    ? `${length + " " + renderPhrase(length)}   с тобой сегодня`
+                    : "Никто с тобой не тусанет"}
+            </span>
+        </h2>
+    );
+};
+SearchStatus.propTypes = {
+    length: PropTypes.number.isRequired
 };
 
+export default SearchStatus;
