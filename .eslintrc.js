@@ -15,12 +15,21 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: [
-    'react'
+    "react"
   ],
   rules: {
-    "indent": ["error", 4],
-    "semi": [2, "always"],
-    "space-before-function-paren": ["error", 'never'],
-    "quotes": ["error", "double", {"allowTemplateLiterals": true}]
+    indent: ["error", 4],
+    semi: [2, "always"],
+    "space-before-function-paren": [
+      "error",
+      { anonymous: "always", named:"never" }
+    ],
+    quotes: [
+      "error", 
+      "double", 
+      {
+        allowTemplateLiterals: true
+      }
+    ]
   }
-}
+};
