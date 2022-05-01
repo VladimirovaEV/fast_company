@@ -14,20 +14,9 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
     };
     const renderIcon = (path) => {
         if (selectedSort.path === path) {
-            const addClassName = () => {
-                if (selectedSort.order === "asc") {
-                    return (
-                        "bi-caret-up-fill"
-                    );
-                } else if (selectedSort.order === "desc") {
-                    return (
-                        "bi-caret-down-fill"
-                    );
-                }
-            };
             return (
                 <span>
-                    <i className={"bi " + addClassName()}></i>
+                    <i className={"bi " + (selectedSort.order === "asc" ? "bi-caret-up-fill" : "bi-caret-down-fill")}></i>
                 </span>
             );
         }
@@ -50,7 +39,6 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
                         {columns[column].path && (
                             renderIcon(columns[column].path)
                         )}
-                        {/* {renderIcon(columns[column].path)} */}
                     </th>
                 ))}
             </tr>
