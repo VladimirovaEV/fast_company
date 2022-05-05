@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { paginate } from "../utils/paginate";
 import Pagination from "./pagination";
 import api from "../api";
-// import PropTypes from "prop-types";
 import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UsersTable from "./usersTable";
@@ -40,8 +39,9 @@ const UsersList = () => {
         setCurrentPage(1);
     }, [selectedProf]);
 
-    const handleProfessionSelect = item => {
+    const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        setValue("");
     };
 
     const handlePageChange = (pageIndex) => {
@@ -50,7 +50,12 @@ const UsersList = () => {
     const handleSort = (item) => {
         setSortBy(item);
     };
+    const [value, setValue] = useState("");
+    const handleChangeValue = (event) => setValue(event.target.value);
     if (users) {
+        const searchUsers = users.filter(user => {
+            return user.name.toLowerCase().includes(value.toLowerCase());
+        });
         const filteredUsers = selectedProf
             ? users.filter(
                 (user) =>
@@ -60,12 +65,18 @@ const UsersList = () => {
             : users;
 
         const count = filteredUsers.length;
-        const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        // const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        let sortedUsers;
+        if (value) {
+            sortedUsers = _.orderBy(searchUsers, [sortBy.path], [sortBy.order]);
+        }
+        if (!value) {
+            sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        }
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
         };
-
         return (
             <div className="d-flex">
                 {professions && (
@@ -85,6 +96,22 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    {
+                        <>
+                            <div className="container-fluid">
+                                <form className="d-flex">
+                                    <input
+                                        className="form-control me-2"
+                                        type="search"
+                                        placeholder="Search"
+                                        aria-label="Search"
+                                        onChange={handleChangeValue}
+                                        name="search"
+                                    />
+                                </form>
+                            </div>
+                        </>
+                    }
                     {count > 0 && (
                         <UsersTable
                             users={userCrop}
@@ -107,16 +134,6 @@ const UsersList = () => {
         );
     }
     return "loading";
-    // return (
-    //     <>
-    //         {users.map((user) => (
-    //             <h3 key={user.id}>{user.label}</h3>
-    //         ))}
-    //     </>
-    // );
 };
-// Users.propTypes = {
-//     // users: PropTypes.arrayOf(PropTypes.object).isRequired,
-//     count: PropTypes.number
-// };
+
 export default UsersList;
