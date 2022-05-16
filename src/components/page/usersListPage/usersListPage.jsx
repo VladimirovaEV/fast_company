@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { paginate } from "../utils/paginate";
-import Pagination from "./pagination";
-import api from "../api";
-import GroupList from "./groupList";
-import SearchStatus from "./searchStatus";
-import UsersTable from "./usersTable";
+import PropTypes from "prop-types";
+import { paginate } from "../../../utils/paginate";
+import Pagination from "../../common/pagination";
+import api from "../../../api";
+import GroupList from "../../common/groupList";
+import SearchStatus from "../../ui/searchStatus";
+import UsersTable from "../../ui/usersTable";
 import _ from "lodash";
 
-const UsersList = () => {
+const UsersListPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const [search, setSearch] = useState("");
     const pageSize = 8;
 
     const [users, setUsers] = useState();
@@ -37,11 +39,12 @@ const UsersList = () => {
     }, []);
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedProf]);
+    }, [selectedProf, search]);
 
     const handleProfessionSelect = (item) => {
+        if (search !== "") setSearch("");
         setSelectedProf(item);
-        setValue("");
+        // setSearch("");
     };
 
     const handlePageChange = (pageIndex) => {
@@ -50,30 +53,33 @@ const UsersList = () => {
     const handleSort = (item) => {
         setSortBy(item);
     };
-    const [value, setValue] = useState("");
-    const handleChangeValue = (event) => setValue(event.target.value);
+    const handleChangeSearch = ({ target }) => {
+        setSearch(target.value);
+        setSelectedProf(undefined);
+    };
     if (users) {
-        const searchUsers = users.filter(user => {
-            return user.name.toLowerCase().includes(value.toLowerCase());
-        });
-        const filteredUsers = selectedProf
+        const filteredUsers = search
             ? users.filter(
                 (user) =>
-                    JSON.stringify(user.profession) ===
-                    JSON.stringify(selectedProf)
+                    user.name
+                        .toLowerCase()
+                        .indexOf(search.toLowerCase()) !== -1
             )
-            : users;
+            : selectedProf
+                ? users.filter(
+                    (user) =>
+                        JSON.stringify(user.profession) ===
+                        JSON.stringify(selectedProf)
+                )
+                : users;
 
         const count = filteredUsers.length;
-        // const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-        let sortedUsers;
-        if (value) {
-            sortedUsers = _.orderBy(searchUsers, [sortBy.path], [sortBy.order]);
-        }
-        if (!value) {
-            sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
-        }
-        const userCrop = paginate(sortedUsers, currentPage, pageSize);
+        const sortedUsers = _.orderBy(
+            filteredUsers,
+            [sortBy.path],
+            [sortBy.order]
+        );
+        const usersCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
         };
@@ -105,7 +111,7 @@ const UsersList = () => {
                                         type="search"
                                         placeholder="Search"
                                         aria-label="Search"
-                                        onChange={handleChangeValue}
+                                        onChange={handleChangeSearch}
                                         name="search"
                                     />
                                 </form>
@@ -114,7 +120,7 @@ const UsersList = () => {
                     }
                     {count > 0 && (
                         <UsersTable
-                            users={userCrop}
+                            users={usersCrop}
                             onSort={handleSort}
                             selectedSort={sortBy}
                             onDelete={handleDelete}
@@ -133,7 +139,10 @@ const UsersList = () => {
             </div>
         );
     }
-    return "loading";
+    return "loading...";
+};
+UsersListPage.propTypes = {
+    users: PropTypes.array
 };
 
-export default UsersList;
+export default UsersListPage;
