@@ -85,59 +85,70 @@ const EditUserPage = ({ edit }) => {
             qualities: getQualities(qualities)
         };
         api.users.update(edit, tranformedData);
+    };
+    const handleClick = () => {
         history.goBack();
     };
     return (
         <div className="container mt-5">
-            {/* {!isLoading && ( */}
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Имя"
-                    value={ data.name }
-                    name="name"
-                    onChange={ handleChange }
-                />
-                <TextField
-                    label="Электронная почта"
-                    name="email"
-                    value={ data.email }
-                    onChange={ handleChange }
-                />
-                <SelectField
-                    label="Выбери свою профессию"
-                    defaultOption = "Choose..."
-                    value={ data.profession}
-                    options={professions}
-                    name="profession"
-                    onChange={ handleChange }
-                />
-                <RadioField
-                    options={[
-                        { name: "Male", value: "male" },
-                        { name: "Female", value: "female" },
-                        { name: "Other", value: "other" }
-                    ]}
-                    value={data.sex}
-                    name= "sex"
-                    label="Выберите ваш пол"
-                    onChange={ handleChange }
-                />
-                {
-                    data.qualities.length > 0 && <MultySelectField
-                        options={qualities}
-                        defaultValue={data.qualities}
-                        name="qualities"
-                        label="Выберите ваши качества"
-                        onChange={handleChange}
-                    />
-                }
-                <button type="submit"
-                    className="btn btn-primary w-100 mx-auto"
-                >
-                            Обновить
-                </button>
-            </form>
-            {/* )} */}
+            <div className="row">
+                <div className="col-4">
+                    <button className="btn btn-primary" onClick={handleClick}>
+                        <i className="bi bi-caret-left"></i> Назад
+                    </button>
+                </div>
+                <div className="col-8">
+                    {/* {!isLoading && ( */}
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            label="Имя"
+                            value={ data.name }
+                            name="name"
+                            onChange={ handleChange }
+                        />
+                        <TextField
+                            label="Электронная почта"
+                            name="email"
+                            value={ data.email }
+                            onChange={ handleChange }
+                        />
+                        <SelectField
+                            label="Выбери свою профессию"
+                            defaultOption = "Choose..."
+                            value={ data.profession}
+                            options={professions}
+                            name="profession"
+                            onChange={ handleChange }
+                        />
+                        <RadioField
+                            options={[
+                                { name: "Male", value: "male" },
+                                { name: "Female", value: "female" },
+                                { name: "Other", value: "other" }
+                            ]}
+                            value={data.sex}
+                            name= "sex"
+                            label="Выберите ваш пол"
+                            onChange={ handleChange }
+                        />
+                        {
+                            data.qualities.length > 0 && <MultySelectField
+                                options={qualities}
+                                defaultValue={data.qualities}
+                                name="qualities"
+                                label="Выберите ваши качества"
+                                onChange={handleChange}
+                            />
+                        }
+                        <button type="submit"
+                            className="btn btn-primary w-100 mx-auto"
+                        >
+                                    Обновить
+                        </button>
+                    </form>
+                    {/* )} */}
+                </div>
+            </div>
         </div>
     );
 };
