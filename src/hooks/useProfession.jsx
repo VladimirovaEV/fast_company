@@ -36,10 +36,15 @@ export const ProfessionProvider = ({ children }) => {
             setLoading(false);
         } catch (error) {
             errorCatcher(error);
-            console.log("error");
         }
     }
-    return <ProfessionContext.Provider value={{ isLoading, professions, getProfession }}>{ children }</ProfessionContext.Provider>;
+    return (
+        <ProfessionContext.Provider
+            value={{ isLoading, professions, getProfession }}
+        >
+            { children }
+        </ProfessionContext.Provider>
+    );
 };
 ProfessionProvider.propTypes = {
     children: PropTypes.oneOfType([
