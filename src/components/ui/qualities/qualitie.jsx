@@ -13,8 +13,8 @@ const Qualitie = ({ id }) => {
 };
 
 Qualitie.propTypes = {
-    color: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    // color: PropTypes.string.isRequired,
+    // name: PropTypes.string.isRequired,
     id: PropTypes.string
 };
 export default Qualitie;

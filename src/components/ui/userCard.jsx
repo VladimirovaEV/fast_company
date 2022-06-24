@@ -1,23 +1,28 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { useHistory } from "react-router-dom";
 
 const UserCard = ({ user }) => {
+    const { currentUser } = useAuth();
+    const history = useHistory();
+    const handleClick = () => {
+        history.push(history.location.pathname + "/edit");
+    };
     return (
         <div className="card mb-3">
             <div className="card-body">
-                <Link to={`users/${user._id}/edit`}>
-                    <button className="position-absolute top-0 end-0 btn btn-light btn-sm">
+                {currentUser._id === user._id && (
+                    <button
+                        className="position-absolute top-0 end-0 btn btn-light btn-sm"
+                        onClick={handleClick}
+                    >
                         <i className="bi bi-gear"></i>
                     </button>
-                </Link>
+                )}
                 <div className="d-flex flex-column align-items-center text-center position-relative">
                     <img
-                        src={`https://avatars.dicebear.com/api/avataaars/${(
-                            Math.random() + 1
-                        )
-                            .toString(36)
-                            .substring(7)}.svg`}
+                        src={user.image}
                         alt="avatar"
                         className="rounded-circle"
                         width="150"
