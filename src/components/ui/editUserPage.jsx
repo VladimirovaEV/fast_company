@@ -5,15 +5,20 @@ import TextField from "../common/form/textField";
 import SelectField from "../common/form/selectField";
 import RadioField from "../common/form/radioField";
 import MultySelectField from "../common/form/multiSelectField";
-import { useQualities } from "../../hooks/useQualities";
-import { useProfessions } from "../../hooks/useProfession";
 import { useAuth } from "../../hooks/useAuth";
+import { useSelector } from "react-redux";
+import {
+    getQualities,
+    getQualitiesLoadingStatus
+} from "../../store/qualities";
+import {
+    getProfessions,
+    getProfessionsLoadingStatus
+} from "../../store/professions";
+import { getCurrentUserData } from "../../store/users";
 
 const EditUserPage = () => {
     const history = useHistory();
-    const { currentUser, updateUserData } = useAuth();
-    const { isLoading: qualitiesLoading, qualities } = useQualities();
-    const { isLoading: professionsLoading, professions } = useProfessions();
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState({
         name: "",
@@ -22,6 +27,13 @@ const EditUserPage = () => {
         sex: "",
         qualities: []
     });
+    const currentUser = useSelector(getCurrentUserData());
+    // const { currentUser, updateUserData } = useAuth();
+    const { updateUserData } = useAuth();
+    const qualities = useSelector(getQualities());
+    const professions = useSelector(getProfessions());
+    const professionsLoading = useSelector(getProfessionsLoadingStatus());
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus());
     const qualitiesList = qualities.map(q => ({ label: q.name, value: q._id }));
     const professionsList = professions.map(p => ({ label: p.name, value: p._id }));
     useEffect(() => {
