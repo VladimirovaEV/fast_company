@@ -1,13 +1,15 @@
 import { orderBy } from "lodash";
 import React, { useEffect } from "react";
 import CommentsList, { AddCommentForm } from "../common/comments";
-import { useComments } from "../../hooks/useComments";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getComments,
     getCommentsLoadingStatus,
-    loadCommentsList
+    loadCommentsList,
+    createComment,
+    removeComment
 } from "../../store/comments";
+import { getCurrentUserId } from "../../store/users";
 import { useParams } from "react-router-dom";
 
 const Comments = () => {
@@ -16,14 +18,14 @@ const Comments = () => {
     useEffect(() => {
         dispatch(loadCommentsList(userId));
     }, [userId]);
-    const { createComment, removeComment } = useComments();
     const comments = useSelector(getComments());
+    const currentUserId = useSelector(getCurrentUserId());
     const handleSubmit = (data) => {
-        createComment(data);
+        dispatch(createComment({ ...data, pageId: userId, userId: currentUserId }));
     };
     const isLoading = useSelector(getCommentsLoadingStatus());
     const handleRemoveComment = (id) => {
-        removeComment(id);
+        dispatch(removeComment(id));
     };
     const sortedComments = orderBy(comments, ["created_at"], ["desc"]);
     return (
